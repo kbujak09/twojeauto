@@ -14,6 +14,7 @@ const register = async (req, res) => {
     if (error.code === 11000) {
       return res.status(400).json({ error: 'Ten adres email jest już zajęty' });
     }
+    console.error(error);
     res.status(500).json({ error: 'Błąd serwera podczas rejestracji' });
   }
 }
@@ -32,9 +33,10 @@ const login = async (req, res) => {
       return res.status(401).json({ error: 'Błędne hasło' });
     }
 
-    const token = jwt.sing({ userId: user._id }, SECRET_KEY, { expiresIn: '1d' });
+    const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1d' });
     res.json({ token, message: 'Zalogowano pomyślnie' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Błąd serwera podczas logowania' });
   }
 }
