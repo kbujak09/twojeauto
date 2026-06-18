@@ -12,7 +12,7 @@ const verifyJWT = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
-    req.userId = decoded.userId;
+    req.user = decoded;
     next();
   } catch (error) {
     res.status(403).json({ error: 'Nieważny lub wygasły token' });
