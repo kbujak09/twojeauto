@@ -5,6 +5,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const authRoutes = require('./routes/authRoutes');
+const carRoutes = require('./routes/carRoutes');
 
 const app = express();
 
@@ -18,6 +19,7 @@ mongoose.connect(DB_URL)
   .catch((err) => console.error('Błąd połączenia z bazą:', err));
 
 app.use('/api', authRoutes);
+app.use('/api/cars', carRoutes);
 
 app.listen(3000, () => {
   console.log('Serwer działa na porcie 3000');
