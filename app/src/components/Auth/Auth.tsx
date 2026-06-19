@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate, Link } from '@tanstack/react-router';
 
 import Logo from '../Logo';
 
@@ -12,6 +13,8 @@ export default function Auth() {
   const [message, setMessage] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +50,8 @@ export default function Auth() {
         localStorage.setItem('token', data.token);
         setEmail('');
         setPassword('');
+
+        navigate('/');
       } else if (!isLogin) {
         setIsLogin(true);
         setConfirmPassword('');
@@ -68,9 +73,9 @@ export default function Auth() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.logoWrapper}>
+      <Link to={'/'} className={styles.logoWrapper}>
         <Logo/>
-      </div>
+      </Link>
       <h2 className={styles.title}>{isLogin ? 'Logowanie' : 'Rejestracja' }</h2>
 
       <form className={styles.form} onSubmit={handleSubmit}>
