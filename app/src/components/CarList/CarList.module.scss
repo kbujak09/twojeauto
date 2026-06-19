@@ -1,14 +1,29 @@
 .container {
   flex: 1;
+  width: 100%;
   padding: 0;
   font-family: system-ui, -apple-system, sans-serif;
 }
 
+.header {
+  font-size: 1.5rem;
+  color: #111827;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+
+  @media (max-width: 768px) {
+    text-align: center;
+  }
+}
+
 .message {
-  flex: 1;
+  width: 100%;
   text-align: center;
-  margin-top: 3rem;
+  padding: 3rem 1rem;
   color: #6b7280;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .list {

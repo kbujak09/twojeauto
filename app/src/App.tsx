@@ -6,9 +6,9 @@ import {
   createRouter,
   redirect
 } from '@tanstack/react-router';
-import CarList from './components/CarList';
 import Header from './components/Header';
 import Auth from './components/Auth';
+import Home from './components/Home';
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />
@@ -28,11 +28,7 @@ const mainLayoutRoute = createRoute({
 const indexRoute = createRoute({
   getParentRoute: () => mainLayoutRoute,
   path: '/',
-  component: () => (
-    <div className="main-layout">
-      <CarList />
-    </div>
-  ),
+  component: Home
 });
 
 const loginRoute = createRoute({
