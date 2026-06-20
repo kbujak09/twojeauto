@@ -10,6 +10,9 @@ import Header from './components/Header';
 import Auth from './components/Auth';
 import Home from './components/Home'
 import AddCar from './components/AddCar';
+import CarDetails from './components/CarDetails';
+import MyCars from './components/MyCars';
+import EditCar from './components/EditCar';
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />
@@ -54,8 +57,32 @@ const loginRoute = createRoute({
   component: Auth,
 });
 
+const carDetailsRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: '/car/$carId',
+  component: CarDetails,
+});
+
+const myCarsRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: '/my-cars',
+  component: MyCars
+});
+
+const editCarRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: '/edit/$carId',
+  component: EditCar
+});
+
 const routeTree = rootRoute.addChildren([
-  mainLayoutRoute.addChildren([indexRoute, addCarRoute]),
+  mainLayoutRoute.addChildren([
+    indexRoute,
+    addCarRoute,
+    carDetailsRoute,
+    myCarsRoute,
+    editCarRoute
+  ]),
   loginRoute
 ]);
 

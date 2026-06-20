@@ -5,8 +5,8 @@ const SECRET_KEY = process.env.JWT_SECRET;
 
 const register = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const newUser = new User({ email, password });
+    const { email, password, phone } = req.body;
+    const newUser = new User({ email, password, phone });
 
     await newUser.save();
     res.status(201).json({ message: 'Konto zostało utworzone' })

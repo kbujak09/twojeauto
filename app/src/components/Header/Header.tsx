@@ -19,9 +19,11 @@ export default function Header() {
           <Logo />
         </Link>
         <nav className={styles.nav}>
-          <Link to='add' className={styles.addBtn}>Dodaj ogłoszenie</Link>
+          <Link to='/add' className={styles.addBtn}>Dodaj ogłoszenie</Link>
 
-          <Link to='/' className={styles.link}>Ogłoszenia</Link>
+          {isAuthenticated && (
+            <Link to='/my-cars' className={styles.link}>Twoje ogłoszenia</Link>
+          )}
 
           {isAuthenticated ? (
             <button onClick={handleLogout} className={styles.logoutBtn}>

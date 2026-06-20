@@ -10,6 +10,7 @@ export default function Auth() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,12 +31,13 @@ export default function Auth() {
     }
 
     const endpoint = isLogin ? '/api/login' : '/api/register';
+    const payload = isLogin ? { email, password } : { email, password, phone };
 
     try {
       const res = await fetch(`http://localhost:3000${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -50,6 +52,7 @@ export default function Auth() {
         localStorage.setItem('token', data.token);
         setEmail('');
         setPassword('');
+        setPhone('');
 
         navigate('/');
       } else if (!isLogin) {
@@ -69,6 +72,7 @@ export default function Auth() {
     setMessage('');
     setIsError(false);
     setConfirmPassword('');
+    setPhone('');
   }
 
   return (
@@ -90,6 +94,20 @@ export default function Auth() {
             disabled={isLoading}
           />
         </div>
+
+        {!isLogin && (
+          <div className={styles.inputGroup}>
+            <label htmlFor='phone'>Numer telefonu</label>
+            <input
+              id='phone'
+              type='tel'
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
+        )}
 
         <div className={styles.inputGroup}>
           <label htmlFor='password'>Hasło</label>

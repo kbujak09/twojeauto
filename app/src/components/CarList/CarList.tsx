@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from '@tanstack/react-router';
 import type { Filters } from '../Home';
 
 import styles from './CarList.module.scss';
@@ -11,6 +12,8 @@ interface Car {
   price: number;
   mileage: number;
   fuelType: string;
+  transmission: string;
+  bodyType: string;
   description: string;
   images?: string[];
 }
@@ -67,7 +70,13 @@ export default function CarList({ filters }: Props) {
           <div className={styles.message}>Brak ogłoszeń spełniających kryteria.</div>
         ) : (
           filteredCars.map((car) => (
-            <div key={car._id} className={styles.card}>
+            <Link
+              key={car._id}
+              to="/car/$carId"
+              params={{ carId: car._id }}
+              className={styles.card}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
               <div className={styles.imagePlaceholder}>
                 {car.images && car.images.length > 0 ? (
                   <img
@@ -96,7 +105,7 @@ export default function CarList({ filters }: Props) {
 
                 <p className={styles.description}>{car.description}</p>
               </div>
-            </div>
+            </Link>
           ))
         )}
       </div>

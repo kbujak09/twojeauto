@@ -13,7 +13,8 @@ const getCars = async (req, res) => {
 const getCar = async (req, res) => {
   try {
     const { id } = req.params;
-    const car = await Car.findById(id);
+
+    const car = await Car.findById(id).populate('owner_id', 'username email phone');
 
     if (!car) {
       return res.status(404).json({ error: 'Nie znaleziono ogłoszenia' });
@@ -48,27 +49,32 @@ const createCar = async (req, res) => {
 const updateCar = async (req, res) => {
   try {
     const { id } = req.params;
-    const owner_id = req.user.userId;
-    const updateData = { ...req.body };
 
-    if (req.files && req.files.length > 0) {
-      updateData.images = req.files.map(file => file.path);
+    const car = await Car.findById(id);
+    if (!car) return res.status(404).json({ error: 'Nie znaleziono ogłoszenia' });
+    if (car.owner_id.toString() !== req.user.userId) {
+      return res.status(403).json({ error: 'Brak uprawnień' });
     }
 
-    const car = await Car.findOneAndUpdate(
-      { _id: id, owner_id },
-      updateData,
-      { new: true }
-    );
-
-    if (!car) {
-      return res.status(404).json({ error: 'Ogłoszenie nie istnieje lub brak uprawnień' })
+    let imagesToKeep = [];
+    if (req.body.existingImages) {
+      imagesToKeep = Array.isArray(req.body.existingImages)
+        ? req.body.existingImages
+        : [req.body.existingImages];
     }
 
-    res.json({ message: 'Ogłoszenie zaktualizowane', car });
+    const newImages = req.files ? req.files.map(file => file.path) : [];
+    const finalImages = [...imagesToKeep, ...newImages];
+
+    const updatedData = {
+      ...req.body,
+      images: finalImages
+    };
+
+    const updatedCar = await Car.findByIdAndUpdate(id, updatedData, { new: true });
+    res.json(updatedCar);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: 'Błąd podczas aktualizacji' });
+    res.status(500).json({ error: 'Błąd podczas aktualizacji ogłoszenia' });
   }
 }
 
@@ -90,4 +96,15 @@ const deleteCar = async (req, res) => {
   }
 }
 
-module.exports = { getCars, getCar, createCar, updateCar, deleteCar };
+const getUserCars = async (req, res) => {
+  try {
+    const owner_id = req.user.userId;
+    const cars = await Car.find({ owner_id }).sort({ createdAt: -1 });
+    res.json(cars);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Błąd podczas pobierania Twoich ogłoszeń' });
+  }
+}
+
+module.exports = { getCars, getCar, createCar, updateCar, deleteCar, getUserCars };
