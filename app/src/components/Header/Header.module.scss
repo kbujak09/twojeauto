@@ -49,9 +49,26 @@
   font-weight: 500;
   cursor: pointer;
   transition: color 0.2s;
+  font-size: 1rem;
 
   &:hover {
     color: #e11d48;
+  }
+}
+
+.addBtn {
+  text-decoration: none;
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #1d4ed8;
   }
 }
 

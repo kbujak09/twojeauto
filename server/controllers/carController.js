@@ -29,9 +29,15 @@ const getCar = async (req, res) => {
 const createCar = async (req, res) => {
   try {
     const owner_id = req.user.userId;
-    const newCar = new Car({ ...req.body, owner_id });
+    const carData = { ...req.body, owner_id };
 
+    if (req.file) {
+      carData.imageUrl = req.file.path;
+    }
+
+    const newCar = new Car(carData);
     await newCar.save();
+
     res.status(201).json({ message: 'Ogłoszenie zostało dodane', car: newCar });
   } catch (error) {
     console.error(error);
@@ -43,10 +49,15 @@ const updateCar = async (req, res) => {
   try {
     const { id } = req.params;
     const owner_id = req.user.userId;
+    const updateData = { ...req.body };
+
+    if (req.file) {
+      updateData.imageUrl = req.file.path;
+    }
 
     const car = await Car.findOneAndUpdate(
       { _id: id, owner_id },
-      req.body,
+      updateData,
       { new: true }
     );
 
@@ -54,7 +65,7 @@ const updateCar = async (req, res) => {
       return res.status(404).json({ error: 'Ogłoszenie nie istnieje lub brak uprawnień' })
     }
 
-    res.json({ message: 'Ogłoszenie zaktualizowane' }, car);
+    res.json({ message: 'Ogłoszenie zaktualizowane', car });
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: 'Błąd podczas aktualizacji' });
@@ -71,6 +82,8 @@ const deleteCar = async (req, res) => {
     if (!car) {
       return res.status(404).json({ error: 'Ogłoszenie nie istnieje lub brak uprawnień' });
     }
+
+    res.json({ message: 'Ogłoszenie zostało usunięte' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Błąd podczas usuwania' });

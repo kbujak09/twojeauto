@@ -28,6 +28,10 @@ const carSchema = new mongoose.Schema({
   description: {
     type: String
   },
+  imageUrl: {
+    type: String,
+    default: null
+  },
   owner_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

@@ -48,6 +48,7 @@ export default function Sidebar({ filters, setFilters }: Props) {
             name='priceMin'
             value={filters.priceMin}
             onChange={handleChange}
+            min='0'
           />
         </div>
 
@@ -59,6 +60,7 @@ export default function Sidebar({ filters, setFilters }: Props) {
             name='priceMax'
             value={filters.priceMax}
             onChange={handleChange}
+            min='0'
           />
         </div>
 

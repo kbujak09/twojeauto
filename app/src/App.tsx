@@ -8,7 +8,8 @@ import {
 } from '@tanstack/react-router';
 import Header from './components/Header';
 import Auth from './components/Auth';
-import Home from './components/Home';
+import Home from './components/Home'
+import AddCar from './components/AddCar';
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />
@@ -31,6 +32,17 @@ const indexRoute = createRoute({
   component: Home
 });
 
+const addCarRoute = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: '/add',
+  beforeLoad: () => {
+    if (!localStorage.getItem('token')) {
+      throw redirect({ to: '/login' });
+    }
+  },
+  component: AddCar
+});
+
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
@@ -43,7 +55,7 @@ const loginRoute = createRoute({
 });
 
 const routeTree = rootRoute.addChildren([
-  mainLayoutRoute.addChildren([indexRoute]),
+  mainLayoutRoute.addChildren([indexRoute, addCarRoute]),
   loginRoute
 ]);
 

@@ -63,7 +63,15 @@ export default function CarList({ filters }: Props) {
           filteredCars.map((car) => (
             <div key={car._id} className={styles.card}>
               <div className={styles.imagePlaceholder}>
-                Brak zdjęcia
+                {car.imageUrl ? (
+                  <img
+                    src={car.imageUrl}
+                    alt={`${car.brand} ${car.model}`}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                ) : (
+                  'Brak zdjęcia'
+                )}
               </div>
 
               <div className={styles.content}>
