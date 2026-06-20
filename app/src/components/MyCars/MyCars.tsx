@@ -23,7 +23,7 @@ export default function MyCars() {
   const fetchMyCars = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3000/api/cars/my', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/cars/my`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Błąd pobierania danych');
@@ -41,7 +41,7 @@ export default function MyCars() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:3000/api/cars/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/cars/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

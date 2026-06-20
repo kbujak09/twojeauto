@@ -4,7 +4,6 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-// Pakiety bezpieczeństwa
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -15,13 +14,12 @@ const carRoutes = require('./routes/carRoutes');
 
 const app = express();
 
-app.use(helmet());
+app.set('trust proxy', 1);
 
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
-
 app.use(xss());
-
 app.use(mongoSanitize());
 
 const limiter = rateLimit({
@@ -40,6 +38,7 @@ mongoose.connect(DB_URL)
 app.use('/api', authRoutes);
 app.use('/api/cars', carRoutes);
 
-app.listen(3000, () => {
-  console.log('Serwer działa na porcie 3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Serwer działa na porcie ${PORT}`);
 });

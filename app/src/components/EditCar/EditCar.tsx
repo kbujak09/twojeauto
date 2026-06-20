@@ -20,7 +20,7 @@ export default function EditCar() {
   useEffect(() => {
     const fetchCar = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/cars/${carId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/cars/${carId}`);
         if (!res.ok) throw new Error('Nie udało się pobrać ogłoszenia');
         const data = await res.json();
         setFormData({
@@ -82,7 +82,7 @@ export default function EditCar() {
       existingImages.forEach((img) => submitData.append('existingImages', img));
       newImages.forEach((file) => submitData.append('images', file));
 
-      const res = await fetch(`http://localhost:3000/api/cars/${carId}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/cars/${carId}`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${token}` },
         body: submitData

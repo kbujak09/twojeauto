@@ -94,7 +94,7 @@ export default function AddCar() {
         submitData.append('images', image);
       });
 
-      const res = await fetch('http://localhost:3000/api/cars', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/cars`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

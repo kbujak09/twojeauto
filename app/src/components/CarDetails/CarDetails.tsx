@@ -40,7 +40,7 @@ export default function CarDetails() {
   useEffect(() => {
     const fetchCar = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/cars/${carId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/cars/${carId}`);
         if (!res.ok) throw new Error('Błąd podczas pobierania ogłoszenia');
         const data = await res.json();
         setCar(data);

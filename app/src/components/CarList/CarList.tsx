@@ -30,7 +30,7 @@ export default function CarList({ filters }: Props) {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/cars');
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/cars`);
         if (!res.ok) throw new Error('Błąd pobierania danych z serwera');
 
         const data = await res.json();
