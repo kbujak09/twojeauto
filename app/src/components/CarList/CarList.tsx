@@ -12,6 +12,7 @@ interface Car {
   mileage: number;
   fuelType: string;
   description: string;
+  images?: string[];
 }
 
 interface Props {
@@ -48,7 +49,12 @@ export default function CarList({ filters }: Props) {
     if (filters.brand && !car.brand.toLowerCase().includes(filters.brand.toLowerCase())) return false;
     if (filters.priceMin && car.price < Number(filters.priceMin)) return false;
     if (filters.priceMax && car.price > Number(filters.priceMax)) return false;
+    if (filters.yearMin && car.year < Number(filters.yearMin)) return false;
+    if (filters.yearMax && car.year > Number(filters.yearMax)) return false;
+    if (filters.mileageMax && car.mileage > Number(filters.mileageMax)) return false;
     if (filters.fuelType && car.fuelType !== filters.fuelType) return false;
+    if (filters.transmission && car.transmission !== filters.transmission) return false;
+    if (filters.bodyType && car.bodyType !== filters.bodyType) return false;
     return true;
   });
 
@@ -63,9 +69,9 @@ export default function CarList({ filters }: Props) {
           filteredCars.map((car) => (
             <div key={car._id} className={styles.card}>
               <div className={styles.imagePlaceholder}>
-                {car.imageUrl ? (
+                {car.images && car.images.length > 0 ? (
                   <img
-                    src={car.imageUrl}
+                    src={car.images[0]}
                     alt={`${car.brand} ${car.model}`}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />

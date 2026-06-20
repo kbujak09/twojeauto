@@ -12,9 +12,15 @@ export default function AddCar() {
     price: '',
     mileage: '',
     fuelType: 'Benzyna',
+    transmission: 'Manualna',
+    engineCapacity: '',
+    power: '',
+    bodyType: 'Sedan',
+    color: '',
+    vin: '',
     description: ''
   });
-  const [image, setImage] = useState<File | null>(null);
+  const [images, setImages] = useState<File[]>([]);
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -26,8 +32,37 @@ export default function AddCar() {
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+
+      setImages((prevImages) => {
+        const combinedFiles = [...prevImages, ...newFiles];
+
+        if (combinedFiles.length > 10) {
+          setError('Możesz dodać maksymalnie 10 zdjęć.');
+          return combinedFiles.slice(0, 10);
+        } else {
+          setError('');
+          return combinedFiles;
+        }
+      });
+    }
+  };
+
+  const clearImages = () => {
+    setImages([]);
+    setError('');
+    const fileInput = document.getElementById('images') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+  };
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    setImages((prevImages) => prevImages.filter((_, index) => index !== indexToRemove));
+
+    if (images.length === 1) {
+      setError('');
+      const fileInput = document.getElementById('images') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
     }
   };
 
@@ -47,11 +82,17 @@ export default function AddCar() {
       submitData.append('price', String(formData.price));
       submitData.append('mileage', String(formData.mileage));
       submitData.append('fuelType', formData.fuelType);
+      submitData.append('transmission', formData.transmission);
+      submitData.append('engineCapacity', String(formData.engineCapacity));
+      submitData.append('power', String(formData.power));
+      submitData.append('bodyType', formData.bodyType);
+      submitData.append('color', formData.color);
+      submitData.append('vin', formData.vin);
       submitData.append('description', formData.description);
 
-      if (image) {
-        submitData.append('image', image);
-      }
+      images.forEach((image) => {
+        submitData.append('images', image);
+      });
 
       const res = await fetch('http://localhost:3000/api/cars', {
         method: 'POST',
@@ -80,125 +121,129 @@ export default function AddCar() {
         <div className={styles.grid}>
           <div className={styles.inputGroup}>
             <label htmlFor='brand'>Marka</label>
-            <input
-              id='brand'
-              name='brand'
-              value={formData.brand}
-              onChange={handleChange}
-              required
-              disabled={isLoading}
-            />
+            <input id='brand' name='brand' value={formData.brand} onChange={handleChange} required disabled={isLoading} />
           </div>
 
           <div className={styles.inputGroup}>
             <label htmlFor='model'>Model</label>
-            <input
-              id='model'
-              name='model'
-              value={formData.model}
-              onChange={handleChange}
-              required
-              disabled={isLoading}
-            />
+            <input id='model' name='model' value={formData.model} onChange={handleChange} required disabled={isLoading} />
           </div>
 
           <div className={styles.inputGroup}>
             <label htmlFor='year'>Rocznik</label>
-            <input
-              type='number'
-              id='year'
-              name='year'
-              value={formData.year}
-              onChange={handleChange}
-              required
-              min='1900'
-              max={new Date().getFullYear()}
-              disabled={isLoading}
-            />
+            <input type='number' id='year' name='year' value={formData.year} onChange={handleChange} required min='1900' max={new Date().getFullYear()} disabled={isLoading} />
           </div>
 
           <div className={styles.inputGroup}>
             <label htmlFor='price'>Cena (PLN)</label>
-            <input
-              type='number'
-              id='price'
-              name='price'
-              value={formData.price}
-              onChange={handleChange}
-              onKeyDown={(e) => (e.key === '-' || e.key === 'e') && e.preventDefault()}
-              className={styles.noSpinners}
-              required
-              min='0'
-              disabled={isLoading}
-            />
+            <input type='number' id='price' name='price' value={formData.price} onChange={handleChange} onKeyDown={(e) => (e.key === '-' || e.key === 'e') && e.preventDefault()} className={styles.noSpinners} required min='0' disabled={isLoading} />
           </div>
 
           <div className={styles.inputGroup}>
             <label htmlFor='mileage'>Przebieg (km)</label>
-            <input
-              type='number'
-              id='mileage'
-              name='mileage'
-              value={formData.mileage}
-              onChange={handleChange}
-              onKeyDown={(e) => (e.key === '-' || e.key === 'e') && e.preventDefault()}
-              className={styles.noSpinners}
-              required
-              min='0'
-              disabled={isLoading}
-            />
+            <input type='number' id='mileage' name='mileage' value={formData.mileage} onChange={handleChange} onKeyDown={(e) => (e.key === '-' || e.key === 'e') && e.preventDefault()} className={styles.noSpinners} required min='0' disabled={isLoading} />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor='engineCapacity'>Pojemność silnika (cm3)</label>
+            <input type='number' id='engineCapacity' name='engineCapacity' value={formData.engineCapacity} onChange={handleChange} className={styles.noSpinners} required min='0' disabled={isLoading} />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor='power'>Moc (KM)</label>
+            <input type='number' id='power' name='power' value={formData.power} onChange={handleChange} className={styles.noSpinners} required min='0' disabled={isLoading} />
           </div>
 
           <div className={styles.inputGroup}>
             <label htmlFor='fuelType'>Paliwo</label>
-            <select
-              name='fuelType'
-              id='fuelType'
-              value={formData.fuelType}
-              onChange={handleChange}
-              disabled={isLoading}
-            >
+            <select name='fuelType' id='fuelType' value={formData.fuelType} onChange={handleChange} disabled={isLoading}>
               <option value='Benzyna'>Benzyna</option>
               <option value='Diesel'>Diesel</option>
+              <option value='LPG'>LPG</option>
               <option value='Hybryda'>Hybryda</option>
               <option value='Elektryczny'>Elektryczny</option>
             </select>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor='transmission'>Skrzynia biegów</label>
+            <select name='transmission' id='transmission' value={formData.transmission} onChange={handleChange} disabled={isLoading}>
+              <option value='Manualna'>Manualna</option>
+              <option value='Automatyczna'>Automatyczna</option>
+            </select>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor='bodyType'>Typ nadwozia</label>
+            <select name='bodyType' id='bodyType' value={formData.bodyType} onChange={handleChange} disabled={isLoading}>
+              <option value='Sedan'>Sedan</option>
+              <option value='Kombi'>Kombi</option>
+              <option value='Hatchback'>Hatchback</option>
+              <option value='SUV'>SUV</option>
+              <option value='Coupe'>Coupe</option>
+              <option value='Kabriolet'>Kabriolet</option>
+            </select>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor='color'>Kolor</label>
+            <input id='color' name='color' value={formData.color} onChange={handleChange} required disabled={isLoading} />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor='vin'>VIN</label>
+            <input id='vin' name='vin' value={formData.vin} onChange={handleChange} required disabled={isLoading} />
           </div>
         </div>
 
         <div className={styles.inputGroup}>
           <label htmlFor='description'>Opis</label>
-          <textarea
-            name='description'
-            id='description'
-            value={formData.description}
-            onChange={handleChange}
-            required
-            rows={5}
-            disabled={isLoading}
-          />
+          <textarea name='description' id='description' value={formData.description} onChange={handleChange} required rows={5} disabled={isLoading} />
         </div>
 
         <div className={styles.inputGroup}>
-          <label htmlFor='image'>Zdjęcie pojazdu</label>
+          <label htmlFor='images'>Zdjęcia pojazdu (max 10)</label>
           <input
             type='file'
-            id='image'
-            name='image'
+            id='images'
+            name='images'
             accept='image/png, image/jpeg, image/webp'
+            multiple
             onChange={handleImageChange}
             disabled={isLoading}
             className={styles.fileInput}
           />
+
+          {images.length > 0 && (
+            <div className={styles.fileList}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <p style={{ margin: 0 }}>Dodano plików: {images.length} / 10</p>
+                <button type="button" onClick={clearImages} className={styles.clearBtn}>
+                  Wyczyść listę
+                </button>
+              </div>
+              <ul className={styles.imageList}>
+                {images.map((file, index) => (
+                  <li key={index} className={styles.fileItem}>
+                    <span>{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className={styles.removeBtn}
+                      title="Usuń to zdjęcie"
+                    >
+                      &times;
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {error && <div className={styles.error}>{error}</div>}
 
-        <button
-          type='submit'
-          className={styles.submitBtn}
-          disabled={isLoading}
-        >
+        <button type='submit' className={styles.submitBtn} disabled={isLoading}>
           {isLoading ? 'Zapisywanie...' : 'Dodaj ogłoszenie'}
         </button>
       </form>

@@ -34,6 +34,7 @@
 
 .card {
   display: flex;
+  height: 220px;
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -46,7 +47,8 @@
 }
 
 .imagePlaceholder {
-  width: 260px;
+  width: 280px;
+  flex-shrink: 0;
   background-color: #f3f4f6;
   display: flex;
   align-items: center;
@@ -117,6 +119,7 @@
 @media (max-width: 640px) {
   .card {
     flex-direction: column;
+    height: auto;
   }
 
   .imagePlaceholder {

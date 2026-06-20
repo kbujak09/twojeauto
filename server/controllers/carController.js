@@ -31,8 +31,8 @@ const createCar = async (req, res) => {
     const owner_id = req.user.userId;
     const carData = { ...req.body, owner_id };
 
-    if (req.file) {
-      carData.imageUrl = req.file.path;
+    if (req.files && req.files.length > 0) {
+      carData.images = req.files.map(file => file.path);
     }
 
     const newCar = new Car(carData);
@@ -51,8 +51,8 @@ const updateCar = async (req, res) => {
     const owner_id = req.user.userId;
     const updateData = { ...req.body };
 
-    if (req.file) {
-      updateData.imageUrl = req.file.path;
+    if (req.files && req.files.length > 0) {
+      updateData.images = req.files.map(file => file.path);
     }
 
     const car = await Car.findOneAndUpdate(

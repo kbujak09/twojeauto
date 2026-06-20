@@ -9,8 +9,8 @@ router.get('/', getCars);
 router.get('/:id', getCar);
 
 // Authentication needed
-router.post('/', verifyJWT, upload.single('image'), createCar);
-router.put('/:id', verifyJWT, updateCar);
+router.post('/', verifyJWT, upload.array('images', 10), createCar);
+router.put('/:id', verifyJWT, upload.array('images', 10), updateCar);
 router.delete('/:id', verifyJWT, deleteCar);
 
 module.exports = router;

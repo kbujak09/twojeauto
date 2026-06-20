@@ -7,7 +7,12 @@ export interface Filters {
   brand: string;
   priceMin: string;
   priceMax: string;
+  yearMin: string;
+  yearMax: string;
+  mileageMax: string;
   fuelType: string;
+  transmission: string;
+  bodyType: string;
 }
 
 export default function Home() {
@@ -15,7 +20,12 @@ export default function Home() {
     brand: '',
     priceMin: '',
     priceMax: '',
+    yearMin: '',
+    yearMax: '',
+    mileageMax: '',
     fuelType: '',
+    transmission: '',
+    bodyType: ''
   });
 
   return (
