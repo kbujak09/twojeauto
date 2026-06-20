@@ -54,7 +54,7 @@ export default function Auth() {
         setPassword('');
         setPhone('');
 
-        navigate('/');
+        navigate({ to: '/' } as any);
       } else if (!isLogin) {
         setIsLogin(true);
         setConfirmPassword('');
