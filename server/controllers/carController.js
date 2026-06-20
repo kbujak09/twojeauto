@@ -1,4 +1,21 @@
 const Car = require('../models/Car');
+const { z } = require('zod');
+
+const carValidationSchema = z.object({
+  brand: z.string().min(1),
+  model: z.string().min(1),
+  year: z.preprocess((val) => Number(val), z.number().min(1900).max(new Date().getFullYear())),
+  price: z.preprocess((val) => Number(val), z.number().min(0)),
+  mileage: z.preprocess((val) => Number(val), z.number().min(0)),
+  engineCapacity: z.preprocess((val) => Number(val), z.number().min(0)),
+  power: z.preprocess((val) => Number(val), z.number().min(0)),
+  fuelType: z.string().min(1),
+  transmission: z.string().min(1),
+  bodyType: z.string().min(1),
+  color: z.string().min(1),
+  vin: z.string().length(17),
+  description: z.string().min(20)
+});
 
 const getCars = async (req, res) => {
   try {
@@ -13,13 +30,10 @@ const getCars = async (req, res) => {
 const getCar = async (req, res) => {
   try {
     const { id } = req.params;
-
     const car = await Car.findById(id).populate('owner_id', 'username email phone');
-
     if (!car) {
       return res.status(404).json({ error: 'Nie znaleziono ogłoszenia' });
     }
-
     res.json(car);
   } catch (error) {
     console.error(error);
@@ -29,8 +43,9 @@ const getCar = async (req, res) => {
 
 const createCar = async (req, res) => {
   try {
+    const validatedData = carValidationSchema.parse(req.body);
     const owner_id = req.user.userId;
-    const carData = { ...req.body, owner_id };
+    const carData = { ...validatedData, owner_id };
 
     if (req.files && req.files.length > 0) {
       carData.images = req.files.map(file => file.path);
@@ -41,8 +56,11 @@ const createCar = async (req, res) => {
 
     res.status(201).json({ message: 'Ogłoszenie zostało dodane', car: newCar });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: 'Niepoprawne dane wejściowe', details: error.errors });
+    }
     console.error(error);
-    res.status(400).json({ error: 'Niepoprawne dane wejściowe' });
+    res.status(500).json({ error: 'Błąd podczas tworzenia ogłoszenia' });
   }
 }
 
@@ -56,6 +74,8 @@ const updateCar = async (req, res) => {
       return res.status(403).json({ error: 'Brak uprawnień' });
     }
 
+    const validatedData = carValidationSchema.parse(req.body);
+
     let imagesToKeep = [];
     if (req.body.existingImages) {
       imagesToKeep = Array.isArray(req.body.existingImages)
@@ -67,13 +87,16 @@ const updateCar = async (req, res) => {
     const finalImages = [...imagesToKeep, ...newImages];
 
     const updatedData = {
-      ...req.body,
+      ...validatedData,
       images: finalImages
     };
 
     const updatedCar = await Car.findByIdAndUpdate(id, updatedData, { new: true });
     res.json(updatedCar);
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: 'Niepoprawne dane wejściowe', details: error.errors });
+    }
     res.status(500).json({ error: 'Błąd podczas aktualizacji ogłoszenia' });
   }
 }
